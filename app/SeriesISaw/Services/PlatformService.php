@@ -41,7 +41,7 @@ class PlatformService implements PlatformServiceInterface {
 	}
 
 	public function getList() {
-		return $this->platform->orderBy('name', 'asc')->paginate(5);
+		return $this->platform->orderBy('name', 'asc')->paginate(50);
 	}
 
 	public function getPlatforms($id) {

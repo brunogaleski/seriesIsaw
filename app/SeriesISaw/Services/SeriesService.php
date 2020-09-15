@@ -41,7 +41,7 @@ class SeriesService implements SeriesServiceInterface {
 	}
 
 	public function getList() {
-		return $this->series->orderBy('name', 'asc')->paginate(5);
+		return $this->series->orderBy('name', 'asc')->paginate(50);
 	}
 
 	public function getSeries($id) {

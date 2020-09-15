@@ -46,7 +46,7 @@ class UserService implements UserServiceInterface {
 	}
 
 	public function getList() {
-		return $this->user->orderBy('username', 'asc')->paginate(5);
+		return $this->user->orderBy('username', 'asc')->paginate(50);
 	}
 
 	public function getUser($id) {

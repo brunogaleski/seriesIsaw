@@ -1,8 +1,6 @@
 @extends('layouts.master')
 
-<div class="col-md-12">
-    @include('layouts.logout')
-</div>
+@include('history.menu')
 
 <div class="col-md-12 clear">
     <h1>Series History</h1>

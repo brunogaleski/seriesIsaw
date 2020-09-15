@@ -77,7 +77,7 @@ class SeriesHistoryService implements SeriesHistoryServiceInterface {
 	}
 
 	public function getList() {
-		return $this->seriesHistory->orderBy('current_season', 'asc')->orderBy('current_episode', 'asc')->paginate(5);
+		return $this->seriesHistory->orderBy('current_season', 'asc')->orderBy('current_episode', 'asc')->paginate(50);
 	}
 
 	public function getSeriesHistory($id) {
