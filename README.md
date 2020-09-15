@@ -1,7 +1,3 @@
-composer dump-autoload
-
-php artisan db:seed
-
 ## Series I Saw
 
 Keep track of where you are in your favorite series
