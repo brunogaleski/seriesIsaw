@@ -4,6 +4,12 @@ Keep track of where you are in your favorite series
 
 ## Installation
 
+- **Note**: For the version with front in React please go to the React branch:
+```bash
+git checkout react-implementation
+```
+
+
 Import the database from seriesisaw.sql (available in the root of the project)
 
 Create a .env file from .env.example file. Fill your .env with database connection information.
