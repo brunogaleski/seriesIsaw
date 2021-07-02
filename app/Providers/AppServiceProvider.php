@@ -11,6 +11,12 @@ class AppServiceProvider extends ServiceProvider {
      * @return void
      */
     public function register()  {
+        //check that app is local
+        if (!$this->app->isLocal()) {
+            //else register your services you require for production
+            $this->app['request']->server->set('HTTPS', true);
+        }
+
         $this->app->bind(
             'App\SeriesISaw\Repositories\Contracts\SeriesRepositoryInterface',
             'App\SeriesISaw\Repositories\SeriesRepository'
@@ -58,6 +64,5 @@ class AppServiceProvider extends ServiceProvider {
      * @return void
      */
     public function boot()  {
-        //
     }
 }

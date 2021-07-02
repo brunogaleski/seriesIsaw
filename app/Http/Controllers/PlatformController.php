@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\SeriesISaw\Services\Contracts\PlatformServiceInterface;
-use App\SeriesISaw\Models\Platform;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class PlatformController extends Controller {
@@ -14,66 +14,44 @@ class PlatformController extends Controller {
         $this->platformService = $platformService;
     }
 
-    public function list() {
-        return view('platform.list')->with([
-            'platformList' => $this->platformService->getList()
-        ]);
+    public function list(): JsonResponse
+    {
+        return response()->json([ "platformsList" => $this->platformService->getList()]);
     }
 
-    public function store(Request $request) {
-        $result = $this->platformService->save($request->except(['_token', '_method']));
+    public function store(Request $request): JsonResponse
+    {
+        $result = $this->platformService->save($request->except(['_token', '_method', 'XDEBUG_SESSION_START']));
 
         if ($result === true) {
-            return redirect()->route('platform.new')
-                ->with('success', 'Saved Successfully!');
+            return response()->json(["status" => "success", "message" => "Saved Successfully!"]);
         }
 
-        return redirect()->route('platform.new')
-            ->withInput()
-            ->withErrors($result);
+        return response()->json(["status" => "failed", "message" => $result]);
     }
 
 
-    public function create() {
-        return view('platform.create');
-    }
-
-    public function edit($id) {
-        return view('platform.edit')->with([
-            'platform' => $this->platformService
-                ->getPlatforms($id)
-        ]);
-    }
-
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id): JsonResponse {
 
         $result = $this->platformService
-            ->update($request->except(['_token', '_method']), $id);
+            ->update($request->except(['_token', '_method', 'XDEBUG_SESSION_START']), $id);
 
         if ($result === true) {
-            return redirect()->route('platform.edit', $id)
-                ->with('success', 'Updated Successfully!');
+            return response()->json(["status" => "success", "message" => "Updated Successfully!"]);
         }
 
-        return redirect()->route('platform.edit', $id)
-            ->withErrors($result)
-            ->withInput();
+        return response()->json(["status" => "failed", "message" => $result]);
     }
 
-    public function delete(Request $request, $id) {
+    public function delete(Request $request, $id): JsonResponse
+    {
         $result = $this->platformService->delete($id);
         $list = $this->platformService->getList();
 
         if ($result === true) {
-            return redirect()->route('platform.list')->with([
-                'platformList' => $list,
-                'success' => 'Deleted Successfully'
-            ]);
+            return response()->json(["status" => "success", 'platformsList' => $list, "message" => 'Deleted Successfully']);
         }
 
-        return redirect()->route('platform.list')
-            ->withErrors($result)
-            ->with('platformList', $list)
-            ->withInput();
+        return response()->json(["status" => "failed", 'platformsList' => $list, "message" => $result]);
     }
 }

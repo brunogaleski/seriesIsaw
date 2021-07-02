@@ -2,92 +2,56 @@
 
 namespace App\Http\Controllers;
 
-use App\SeriesISaw\Models\User;
 use App\SeriesISaw\Services\Contracts\SeriesHistoryServiceInterface;
-use App\SeriesISaw\Models\Platform;
-use App\SeriesISaw\Models\Series;
-use App\SeriesISaw\Models\SeriesHistory;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
-class SeriesHistoryController extends Controller {
+class SeriesHistoryController extends Controller
+{
 
     protected $seriesHistoryService;
 
-    public function __construct(SeriesHistoryServiceInterface $seriesHistoryService) {
+    public function __construct(SeriesHistoryServiceInterface $seriesHistoryService)
+    {
         $this->seriesHistoryService = $seriesHistoryService;
     }
 
-    public function list() {
-        $seriesHistoryList = Auth::user()->seriesHistory;
-
-        return view('history.list')->with([
-            'seriesHistoryList' => $seriesHistoryList
-        ]);
+    public function list(): JsonResponse
+    {
+        return response()->json(["seriesHistoryList" => $this->seriesHistoryService->getList()]);
     }
 
-    public function store(Request $request) {
-        $request->merge(['user_id' => $request->user()->id]);
-        $result = $this->seriesHistoryService->save($request->except(['_token', '_method']));
+    public function store(Request $request): JsonResponse
+    {
+        $result = $this->seriesHistoryService->save($request->except(['_token', '_method', 'XDEBUG_SESSION_START']));
 
         if ($result === true) {
-            return redirect()->route('seriesHistory.new')
-                ->with('success', 'Saved Successfully!');
+            return response()->json(["status" => "success", "message" => "Saved Successfully!"]);
         }
 
-        return redirect()->route('seriesHistory.new')
-            ->withInput()
-            ->withErrors($result);
+        return response()->json(["status" => "failed", "message" => $result]);
     }
 
-
-    public function create() {
-        $seriesList = Series::orderBy('name')->get();
-        $platformList = Platform::orderBy('name')->get();
-
-        return view('history.create', compact(['seriesList','platformList']));
-    }
-
-    public function edit($id) {
-        $seriesList = Series::orderBy('name')->get();
-        $platformList = Platform::orderBy('name')->get();
-
-        return view('history.edit')->with([
-            'seriesHistory' => $this->seriesHistoryService
-                ->getSeriesHistory($id),
-            'seriesList' => $seriesList,
-            'platformList' => $platformList
-        ]);
-    }
-
-    public function update(Request $request, $id) {
-        $request->merge(['user_id' => $request->user()->id]);
-        $result = $this->seriesHistoryService->update($request->except(['_token', '_method']), $id);
+    public function update(Request $request, $id): JsonResponse
+    {
+        $result = $this->seriesHistoryService->update($request->except(['_token', '_method', 'XDEBUG_SESSION_START']), $id);
 
         if ($result === true) {
-            return redirect()->route('seriesHistory.edit', $id)
-                ->with('success', 'Updated Successfully!');
+            return response()->json(["status" => "success", "message" => "Updated Successfully!"]);
         }
 
-        return redirect()->route('seriesHistory.edit', $id)
-            ->withErrors($result)
-            ->withInput();
+        return response()->json(["status" => "failed", "message" => $result]);
     }
 
-    public function delete(Request $request, $id) {
+    public function delete(Request $request, $id): JsonResponse
+    {
         $result = $this->seriesHistoryService->delete($id);
         $list = $this->seriesHistoryService->getList();
 
         if ($result === true) {
-            return redirect()->route('seriesHistory.list')->with([
-                'seriesHistoryList' => $list,
-                'success' => 'Deleted Successfully'
-            ]);
+            return response()->json(["status" => "success", "message" => "Deleted Successfully!", "seriesHistoryList" => $list]);
         }
 
-        return redirect()->route('seriesHistory.list')
-            ->withErrors($result)
-            ->with('seriesHistoryList', $list)
-            ->withInput();
+        return response()->json(["status" => "failed", "message" => $result, "seriesHistoryList" => $list]);
     }
 }

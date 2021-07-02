@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\SeriesISaw\Services\Contracts\SeriesServiceInterface;
-use App\SeriesISaw\Models\Series;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class SeriesController extends Controller {
@@ -14,66 +14,44 @@ class SeriesController extends Controller {
         $this->seriesService = $seriesService;
     }
 
-    public function list() {
-        return view('series.list')->with([
-            'seriesList' => $this->seriesService->getList()
-        ]);
+    public function list(): JsonResponse
+    {
+        return response()->json([ "seriesList" => $this->seriesService->getList()]);
     }
 
-    public function store(Request $request) {
-        $result = $this->seriesService->save($request->except(['_token', '_method']));
+    public function store(Request $request): JsonResponse
+    {
+        $result = $this->seriesService->save($request->except(['_token', '_method', 'XDEBUG_SESSION_START']));
 
         if ($result === true) {
-            return redirect()->route('series.new')
-                ->with('success', 'Saved Successfully!');
+            return response()->json(["status" => "success", "message" => "Saved Successfully!"]);
         }
 
-        return redirect()->route('series.new')
-            ->withInput()
-            ->withErrors($result);
+        return response()->json(["status" => "failed", "message" => $result]);
     }
 
 
-    public function create() {
-        return view('series.create');
-    }
-
-    public function edit($id) {
-        return view('series.edit')->with([
-            'series' => $this->seriesService
-                ->getSeries($id)
-        ]);
-    }
-
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id): JsonResponse {
 
         $result = $this->seriesService
-            ->update($request->except(['_token', '_method']), $id);
+            ->update($request->except(['_token', '_method', 'XDEBUG_SESSION_START']), $id);
 
         if ($result === true) {
-            return redirect()->route('series.edit', $id)
-                ->with('success', 'Updated Successfully!');
+            return response()->json(["status" => "success", "message" => "Updated Successfully!"]);
         }
 
-        return redirect()->route('series.edit', $id)
-            ->withErrors($result)
-            ->withInput();
+        return response()->json(["status" => "failed", "message" => $result]);
     }
 
-    public function delete(Request $request, $id) {
+    public function delete(Request $request, $id): JsonResponse
+    {
         $result = $this->seriesService->delete($id);
         $list = $this->seriesService->getList();
 
         if ($result === true) {
-            return redirect()->route('series.list')->with([
-                'seriesList' => $list,
-                'success' => 'Deleted Successfully'
-        ]);
+            return response()->json(["status" => "success", 'seriesList' => $list, "message" => 'Deleted Successfully']);
         }
 
-        return redirect()->route('series.list')
-            ->withErrors($result)
-            ->with('seriesList', $list)
-            ->withInput();
+        return response()->json(["status" => "failed", 'seriesList' => $list, "message" => $result]);
     }
 }

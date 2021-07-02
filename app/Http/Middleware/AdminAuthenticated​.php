@@ -14,6 +14,7 @@ class AdminAuthenticated​ {
      * @return mixed
      */
     public function handle($request, Closure $next) {
+        echo "AdminAuthenticated@handle";
         if( Auth::check() ) {
             if ( Auth::user()->isAdmin() ) {
                 return $next($request);

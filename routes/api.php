@@ -14,6 +14,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::POST("user-signup", "UserController@userSignUp");
+Route::POST("user-login", "UserController@userLogin");
+Route::GET("user/{email}", "UserController@userDetail");
+
+Route::GET("series", "SeriesController@list");
+Route::POST('series', 'SeriesController@store');
+Route::POST('series/{id}', 'SeriesController@update');
+Route::DELETE('series/{id}', 'SeriesController@delete');
+
+Route::GET("platforms", "PlatformController@list");
+Route::POST('platforms', 'PlatformController@store');
+Route::POST('platforms/{id}', 'PlatformController@update');
+Route::DELETE('platforms/{id}', 'PlatformController@delete');
+
+Route::GET('series-history', 'SeriesHistoryController@list');
+Route::POST('series-history', 'SeriesHistoryController@store');
+Route::POST('series-history/{id}', 'SeriesHistoryController@update');
+Route::DELETE('series-history/{id}', 'SeriesHistoryController@delete');

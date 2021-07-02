@@ -4,7 +4,7 @@ namespace App\SeriesISaw\Services;
 *
 */
 use \Validator;
-use App\SeriesISaw\Services\Contracts\seriesServiceInterface;
+use App\SeriesISaw\Services\Contracts\SeriesServiceInterface;
 use App\SeriesISaw\Repositories\Contracts\SeriesRepositoryInterface;
 
 class SeriesService implements SeriesServiceInterface {
