@@ -12,7 +12,10 @@ git checkout react-implementation
 
 Import the database from seriesisaw.sql (available in the root of the project)
 
-Create a .env file from .env.example file. Fill your .env with database connection information.
+
+Create a database with the name 'seriesIsaw'
+
+Create a .env file from .env.example file. Fill your .env with the database connection information.
 
 DB_CONNECTION=mysql  
 DB_HOST=127.0.0.1  
